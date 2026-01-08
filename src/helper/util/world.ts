@@ -2,7 +2,7 @@ import { IWorldOptions, setWorldConstructor, World } from '@cucumber/cucumber';
 import { Page, BrowserContext, Browser } from '@playwright/test';
 import LoginPage from '../../pages/loginPage'; 
 import { UserManagementPage } from '../../pages/userManagementPage'; 
-import { AssignmentPage } from '../../pages/assignmentPage'; 
+
 
 export class CustomWorld extends World {
   browser!: Browser;
@@ -10,8 +10,8 @@ export class CustomWorld extends World {
   context!: BrowserContext;
   loginPage!: LoginPage;
   userPage!: UserManagementPage; 
-  // 2. Add the assignmentPage property here
-  assignmentPage!: AssignmentPage; 
+  
+
 
   constructor(options: IWorldOptions) {
     super(options);

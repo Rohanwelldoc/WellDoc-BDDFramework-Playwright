@@ -12,9 +12,12 @@
     "test:bdd": "cucumber-js \"src/test/features/*.feature\" --format json:test-results/cucumber_report_all.json || exit 0",
 
 
+ "test:user": "set REPORT_NAME=user && cucumber-js src/test/features/userManagement.feature --require-module ts-node/register --require src/test/steps/**/*.ts -t \"@UserManagement\" --format json:test-results/cucumber_report_user.json && npx ts-node src/helper/util/sendMail.ts test-results/cucumber_report_user.json"
+,
+   "test:login": "set REPORT_NAME=login && cucumber-js src/test/features/login.feature --tags \"@Login\" --format json:test-results/cucumber_report_login.json",
 
-    "test:user": "set REPORT_NAME=user && cucumber-js \"src/test/features/*.feature\" --tags \"@UserManagement\" --format json:test-results/cucumber_report_user.json || exit 0",
-    "test:login": "set REPORT_NAME=login && cucumber-js src/test/features/login.feature --tags \"@Login\" --format json:test-results/cucumber_report_login.json",
+"test:all": "set REPORT_NAME=all && cucumber-js src/test/features --require-module ts-node/register --require src/test/steps/**/*.ts --format json:test-results/cucumber_report_all.json",
+"posttest:all": "npx ts-node src/helper/util/sendMail.ts test-results/cucumber_report_all.json",
 
  
     "posttest:bdd": "npx ts-node src/helper/util/sendMail.ts test-results/cucumber_report_all.json",

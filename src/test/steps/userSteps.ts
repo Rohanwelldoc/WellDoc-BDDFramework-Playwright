@@ -1,33 +1,89 @@
-import { Given, When, Then } from '@cucumber/cucumber';
-import { CustomWorld } from '../../helper/util/world';
+import { When, Then } from '@cucumber/cucumber';
 import { UserManagementPage } from '../../pages/userManagementPage';
-import { expect } from '@playwright/test';
 
-Given('user navigates to the User Management section', async function (this: CustomWorld) {
-    // Initialize the Page Object and assign it to the World context
-    this.userPage = new UserManagementPage(this.page);
-    await this.userPage.selectUserManagementMenu();
+let userManagementPage: UserManagementPage;
+
+console.log('🔥 userSteps.ts LOADED');
+
+When('user navigates to the User Management section', async function () {
+  console.log('➡️ Step: Navigate to User Management section');
+  userManagementPage = new UserManagementPage(this.page);
+  await userManagementPage.navigateToUserManagement();
+  console.log('✅ Navigated to User Management section');
 });
 
-Given('user clicks on the Add User button', async function (this: CustomWorld) {
-    await this.userPage.clickAddUser();
+When('user clicks on the Add User button', async function () {
+  console.log('➡️ Step: Click Add User button (open form)');
+  await userManagementPage.clickAddUser();
+  console.log('✅ Add User form opened');
 });
 
-When('user selects an account from the dropdown', async function (this: CustomWorld) {
-    await this.userPage.selectAccount();
+When('user selects all accounts', async function () {
+  console.log('➡️ Step: Select all accounts');
+  await userManagementPage.selectAllAccounts();
+  console.log('✅ All accounts selected');
 });
 
-Then('the role dropdown should contain the following roles:', async function (this: CustomWorld, dataTable) {
-    // .rows() successfully skips the header row [Role]
-    const expectedRoles = dataTable.rows().flat(); 
-    
-    // Log for debugging in terminal
-    console.log("Verifying roles: " + expectedRoles.join(", "));
-    
-    // Ensure the page object exists before calling methods
-    if (this.userPage) {
-        await this.userPage.verifyRolesPresence(expectedRoles);
-    } else {
-        throw new Error("UserManagementPage was not initialized. Check navigation step.");
-    }
+When('user selects the first checkbox', async function () {
+  console.log('➡️ Step: Select first checkbox');
+  await userManagementPage.selectFirstCheckbox();
+  console.log('✅ First checkbox selected');
+});
+
+When('user enters first name {string}', async function (firstName: string) {
+  console.log(`➡️ Step: Enter first name -> ${firstName}`);
+  await userManagementPage.enterFirstName(firstName);
+  console.log('✅ First name entered');
+});
+
+When('user enters last name {string}', async function (lastName: string) {
+  console.log(`➡️ Step: Enter last name -> ${lastName}`);
+  await userManagementPage.enterLastName(lastName);
+  console.log('✅ Last name entered');
+});
+
+When('user selects role {string}', async function (role: string) {
+  console.log(`➡️ Step: Select role -> ${role}`);
+  await userManagementPage.selectRole(role);
+  console.log('✅ Role selected');
+});
+
+When('user enters email {string}', async function (email: string) {
+  console.log(`➡️ Step: Enter email -> ${email}`);
+  await userManagementPage.enterEmail(email);
+  console.log('✅ Email entered');
+});
+
+When('user enters password {string}', async function (password: string) {
+  console.log('➡️ Step: Enter password');
+  await userManagementPage.enterPassword(password);
+  console.log('✅ Password entered');
+});
+
+When('user re-enters password {string}', async function (password: string) {
+  console.log('➡️ Step: Re-enter password');
+  await userManagementPage.reenterPassword(password);
+  console.log('✅ Password re-entered');
+});
+
+When('user enters mobile number {string}', async function (number: string) {
+  console.log(`➡️ Step: Enter mobile number -> ${number}`);
+  await userManagementPage.enterMobileNumber(number);
+  console.log('✅ Mobile number entered');
+});
+
+/**
+ * 🔑 IMPORTANT
+ * This step SUBMITS the Add User form
+ */
+When('user submits the Add User form', async function () {
+  console.log('➡️ Step: Submit Add User form');
+  await userManagementPage.clickAddUserButton();
+  console.log('✅ Add User form submitted');
+});
+
+Then('user dismisses the confirmation popup', async function () {
+  console.log('➡️ Step: Dismiss confirmation popup');
+  await userManagementPage.dismissPopup();
+  console.log('✅ Confirmation popup dismissed');
 });

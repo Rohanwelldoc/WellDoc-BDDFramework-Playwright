@@ -5,14 +5,15 @@ export const GlobalVariables = {
   ACCOUNT_CODE: "testauto",
   PROJECT_NAME: "Welldoc",
 
-  BASE_URL: "https://azqa24-dsm.testwd.com/CarePortal/login",
+  // ✅ FIXED: BASE_URL must be ONLY a URL
+  BASE_URL: "https://azqa32-dsm.testwd.com/CarePortal/login",
   BASE_QUARTZ_URL: "https://wd-az-asp-qa32-timerfunction.azurewebsites.net/api/",
 
   /* Mobile Automation (Kept for reference. Playwright does NOT use these) */
   SERVER_URL: "http://127.0.0.1:4723/wd/hub",
   PLATFORM_NAME: "android",
   UDID: "9834FAC3-658E-425D-BB5B-EC4A234F9D26",
-  DEVICE_NAME: "Android_Device",       
+  DEVICE_NAME: "Android_Device",
   SYSTEM_DETAILS: "Playwright_System",
   APPLICATION_NAME: "AllStar.apk",
 
@@ -48,8 +49,8 @@ export const GlobalVariables = {
 
   /* Generic Patient Details */
   EmailAddress: "automationgk20+<randomvalue>@gmail.com",
-  USERNAME: "welldocsu",        // ✅ Added for login scripts
-  PASSWORD: "welldoc123",       // ✅ Renamed from Password (case-sensitive)
+  USERNAME: "welldocsu",
+  PASSWORD: "welldoc123",
   Pin: "1111",
   FirstName: "Te",
   LastName: "Au",
@@ -64,7 +65,7 @@ export const GlobalVariables = {
   SIMILARITY_THRESHOLD: 5.0,
 
   /* Timeouts */
-  IMPLICIT_TIMEOUT: 60 * 1000,  // milliseconds
+  IMPLICIT_TIMEOUT: 60 * 1000,
   EXPLICIT_TIMEOUT: 120 * 1000,
 
   /* Date Formats */
