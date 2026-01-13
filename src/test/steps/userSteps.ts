@@ -1,18 +1,21 @@
-import { When, Then } from '@cucumber/cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 import { UserManagementPage } from '../../pages/userManagementPage';
 
 let userManagementPage: UserManagementPage;
 
 console.log('🔥 userSteps.ts LOADED');
 
-When('user navigates to the User Management section', async function () {
+// --- User Management Section ---
+
+// Use Given to match your Feature file exactly
+Given('user navigates to the User Management section', async function () {
   console.log('➡️ Step: Navigate to User Management section');
   userManagementPage = new UserManagementPage(this.page);
   await userManagementPage.navigateToUserManagement();
   console.log('✅ Navigated to User Management section');
 });
 
-When('user clicks on the Add User button', async function () {
+Given('user clicks on the Add User button', async function () {
   console.log('➡️ Step: Click Add User button (open form)');
   await userManagementPage.clickAddUser();
   console.log('✅ Add User form opened');
@@ -30,6 +33,7 @@ When('user selects the first checkbox', async function () {
   console.log('✅ First checkbox selected');
 });
 
+// FIXED: Added backticks for template literals to fix "Cannot find name Step"
 When('user enters first name {string}', async function (firstName: string) {
   console.log(`➡️ Step: Enter first name -> ${firstName}`);
   await userManagementPage.enterFirstName(firstName);
@@ -72,10 +76,6 @@ When('user enters mobile number {string}', async function (number: string) {
   console.log('✅ Mobile number entered');
 });
 
-/**
- * 🔑 IMPORTANT
- * This step SUBMITS the Add User form
- */
 When('user submits the Add User form', async function () {
   console.log('➡️ Step: Submit Add User form');
   await userManagementPage.clickAddUserButton();

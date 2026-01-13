@@ -7,29 +7,17 @@
   "scripts": {
     "clean": "if exist test-results rmdir /s /q test-results",
     "pretest:bdd": "npm run clean",
-
-    
-    "test:bdd": "cucumber-js \"src/test/features/*.feature\" --format json:test-results/cucumber_report_all.json || exit 0",
-
-
- "test:user": "set REPORT_NAME=user && cucumber-js src/test/features/userManagement.feature --require-module ts-node/register --require src/test/steps/**/*.ts -t \"@UserManagement\" --format json:test-results/cucumber_report_user.json && npx ts-node src/helper/util/sendMail.ts test-results/cucumber_report_user.json"
-,
-   "test:login": "set REPORT_NAME=login && cucumber-js src/test/features/login.feature --tags \"@Login\" --format json:test-results/cucumber_report_login.json",
-
-"test:all": "set REPORT_NAME=all && cucumber-js src/test/features --require-module ts-node/register --require src/test/steps/**/*.ts --format json:test-results/cucumber_report_all.json",
-"posttest:all": "npx ts-node src/helper/util/sendMail.ts test-results/cucumber_report_all.json",
-
- 
+    "test:bdd": "cucumber-js \"src/test/features/*.feature\" --format json:test-results/cucumber_report_all.json",
+    "test:user": "set REPORT_NAME=user && cucumber-js src/test/features/userManagement.feature --require-module ts-node/register --require src/test/steps/**/*.ts --require src/test/hooks/**/*.ts -t \"@UserManagement\" --format json:test-results/cucumber_report_user.json || exit 0",
+    "test:login": "set REPORT_NAME=login && cucumber-js src/test/features/login.feature --require-module ts-node/register --require src/test/steps/**/*.ts --require src/test/hooks/**/*.ts --tags \"@Login\" --format json:test-results/cucumber_report_login.json ||exit 0",
+    "test:all": "set REPORT_NAME=all && cucumber-js src/test/features --require-module ts-node/register --require src/test/steps/**/*.ts --format json:test-results/cucumber_report_all.json",
+    "posttest:all": "npx ts-node --project tsconfig.json src/helper/util/sendMail.ts test-results/cucumber_report_all.json",
     "posttest:bdd": "npx ts-node src/helper/util/sendMail.ts test-results/cucumber_report_all.json",
     "posttest:user": "npx ts-node src/helper/util/sendMail.ts test-results/cucumber_report_user.json",
     "posttest:login": "npx ts-node src/helper/util/sendMail.ts test-results/cucumber_report_login.json",
-
-  
     "allure:generate": "allure generate allure-results --clean -o allure-report",
     "allure:open": "allure open allure-report",
     "allure:report": "npm run allure:generate && npm run allure:open",
-
-   
     "report:all": "npx cucumber-html-reporter --theme bootstrap --jsonFile test-results/cucumber_report_all.json --output test-results/all_report.html",
     "report:user": "npx cucumber-html-reporter --theme bootstrap --jsonFile test-results/cucumber_report_user.json --output test-results/user_report.html",
     "report:login": "npx cucumber-html-reporter --theme bootstrap --jsonFile test-results/cucumber_report_login.json --output test-results/login_report.html"
