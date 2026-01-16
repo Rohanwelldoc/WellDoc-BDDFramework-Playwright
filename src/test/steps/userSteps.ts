@@ -1,5 +1,6 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { UserManagementPage } from '../../pages/userManagementPage';
+import addUserData from '../../test-data/addUser.json';
 
 let userManagementPage: UserManagementPage;
 
@@ -21,17 +22,21 @@ Given('user clicks on the Add User button', async function () {
   console.log('✅ Add User form opened');
 });
 
-When('user selects all accounts', async function () {
-  console.log('➡️ Step: Select all accounts');
-  await userManagementPage.selectAllAccounts();
-  console.log('✅ All accounts selected');
-});
+
 
 When('user selects the first checkbox', async function () {
+
   console.log('➡️ Step: Select first checkbox');
   await userManagementPage.selectFirstCheckbox();
   console.log('✅ First checkbox selected');
 });
+
+When('user selects the second checkbox', async function () {
+  console.log('➡️ Step: Select second checkbox');
+  await userManagementPage.selectSecondCheckbox();
+  console.log('✅ Second checkbox selected');
+});
+
 
 // FIXED: Added backticks for template literals to fix "Cannot find name Step"
 When('user enters first name {string}', async function (firstName: string) {
@@ -87,3 +92,29 @@ Then('user dismisses the confirmation popup', async function () {
   await userManagementPage.dismissPopup();
   console.log('✅ Confirmation popup dismissed');
 });
+
+//data driven
+When(
+  'user enters user details from test data {string}',
+  async function (testCaseId: string) {
+
+    console.log(`➡️ Loading test data for ${testCaseId}`);
+
+    const data = addUserData[testCaseId];
+
+    if (!data) {
+      throw new Error(`Test data not found for ${testCaseId}`);
+    }
+
+    await userManagementPage.enterFirstName(data.firstName);
+    await userManagementPage.enterLastName(data.lastName);
+    await userManagementPage.selectRole(data.role);
+    await userManagementPage.enterEmail(data.email);
+    await userManagementPage.enterPassword(data.password);
+    await userManagementPage.reenterPassword(data.password);
+    await userManagementPage.enterMobileNumber(data.mobile);
+
+    console.log(`✅ User details entered for ${testCaseId}`);
+  }
+);
+

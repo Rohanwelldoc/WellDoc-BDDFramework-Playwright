@@ -8,7 +8,7 @@ export class UserManagementPage {
   readonly addUserButton: Locator;
   readonly accountSelectButton: Locator;
   readonly selectAllOption: Locator;
-  readonly firstCheckbox: Locator;
+  readonly FirstCheckbox: Locator;
 
   readonly firstNameInput: Locator;
   readonly lastNameInput: Locator;
@@ -24,6 +24,8 @@ export class UserManagementPage {
   readonly uploadButton: Locator;
   readonly addUserConfirmButton: Locator;
   readonly dismissButton: Locator;
+  readonly accountSelectButton2: Locator;
+  readonly secondCheckbox: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -32,7 +34,10 @@ export class UserManagementPage {
     this.addUserButton = page.getByRole('button', { name: 'Add User' });
     this.accountSelectButton = page.getByRole('button', { name: 'Select' }).first();
     this.selectAllOption = page.getByRole('listitem').filter({ hasText: 'Select All' });
-    this.firstCheckbox = page.locator('.checkmark.checkmark-unchecked').first();
+    this.FirstCheckbox = page.locator('div').filter({ hasText: 'AccountMultiple' }).nth(3);
+    this.accountSelectButton2 = page.getByRole('button', { name: 'Select' })
+    this.secondCheckbox = page.locator('.checkmark.checkmark-unchecked').first();
+
 
     this.firstNameInput = page.getByRole('textbox', { name: 'Enter First Name' });
     this.lastNameInput = page.getByRole('textbox', { name: 'Enter Last Name' });
@@ -60,15 +65,18 @@ export class UserManagementPage {
     await this.addUserButton.click();
   }
 
-  async selectAllAccounts() {
-    await this.accountSelectButton.click();
-    await this.selectAllOption.click();
-    await this.accountSelectButton.click();
-  }
+  
+async selectFirstCheckbox() {
+  await this.accountSelectButton.click();
+  await this.selectAllOption.waitFor({ state: 'visible', timeout: 15000 });
+  await this.selectAllOption.click();
+}
 
-  async selectFirstCheckbox() {
-    await this.firstCheckbox.click();
-  }
+async selectSecondCheckbox() {
+  await this.accountSelectButton2.click();
+  await this.secondCheckbox.click();
+ 
+}
 
   async enterFirstName(name: string) {
     await this.firstNameInput.fill(name);
