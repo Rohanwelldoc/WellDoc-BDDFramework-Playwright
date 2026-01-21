@@ -8,7 +8,7 @@ export class UserManagementPage {
   readonly addUserButton: Locator;
   readonly accountSelectButton: Locator;
   readonly selectAllOption: Locator;
-  readonly FirstCheckbox: Locator;
+
 
   readonly firstNameInput: Locator;
   readonly lastNameInput: Locator;
@@ -32,11 +32,20 @@ export class UserManagementPage {
 
     this.userManagementLink = page.getByRole('link', { name: 'User Management' });
     this.addUserButton = page.getByRole('button', { name: 'Add User' });
-    this.accountSelectButton = page.getByRole('button', { name: 'Select' }).first();
-    this.selectAllOption = page.getByRole('listitem').filter({ hasText: 'Select All' });
-    this.FirstCheckbox = page.locator('div').filter({ hasText: 'AccountMultiple' }).nth(3);
-    this.accountSelectButton2 = page.getByRole('button', { name: 'Select' })
-    this.secondCheckbox = page.locator('.checkmark.checkmark-unchecked').first();
+
+   this.accountSelectButton = page.getByRole('button', { name: 'Select' }).first();
+
+    this.selectAllOption = page.locator('.checkmark').first();
+
+// ✅ FIX: explicitly select SECOND "Select" button
+     this.accountSelectButton2 = page .getByRole('button', { name: 'Select' }).last();
+
+// ✅ FIX: explicitly select SECOND checkbox
+    this.secondCheckbox = page .locator('.checkmark.checkmark-unchecked').nth(1);
+
+   
+    
+
 
 
     this.firstNameInput = page.getByRole('textbox', { name: 'Enter First Name' });
@@ -65,15 +74,13 @@ export class UserManagementPage {
     await this.addUserButton.click();
   }
 
-  
-async selectFirstCheckbox() {
+  async selectFirstCheckbox() {
   await this.accountSelectButton.click();
-  await this.selectAllOption.waitFor({ state: 'visible', timeout: 15000 });
   await this.selectAllOption.click();
 }
 
 async selectSecondCheckbox() {
-  await this.accountSelectButton2.click();
+ //await this.accountSelectButton2.click();
   await this.secondCheckbox.click();
  
 }

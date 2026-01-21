@@ -46,7 +46,12 @@ private readonly preferNotOption: Locator;
   private readonly weightManagementChk: Locator;
   private readonly sleepApneaChk: Locator;
   private readonly metabolicDiseaseChk: Locator;
-
+  //logout from profile menu locators can be added here
+     private readonly profileMenuBtn: Locator;
+     private readonly logoutBtn: Locator;
+     private readonly loginBtnOnLogoutScreen: Locator;
+     private readonly logoutOverlayCloseBtn: Locator;
+     private readonly  profileMenuExpandedIndicator;
 
     constructor(private page: Page) {
         console.log('[LoginPage] Initializing locators');
@@ -114,8 +119,19 @@ private readonly preferNotOption: Locator;
     this.weightManagementChk = page.getByRole('checkbox', {name: /Weight/i});
     this.sleepApneaChk = page.getByRole('checkbox', {name: /Sleep/i});
     this.metabolicDiseaseChk = page.getByRole('checkbox', { name: /Metabolic Dysfunction/i});
+   
+      // Logout / Profile Locators
+this.profileMenuBtn = page.getByRole('button', { name: 'e g Prescribing Provider eg' });
+this.logoutBtn = page.locator('button[aria-label="Logout"]').filter({ hasText: 'Logout' });
+this.loginBtnOnLogoutScreen = page.getByRole('button', { name: 'Click to Login' });
+this.logoutOverlayCloseBtn = page.locator('svg');
+// Optional: unique element inside profile menu
+//this.profileMenuExpandedIndicator = page.locator('div.profile-menu'); // adjust to actual menu container
 
-    };
+
+
+    
+  };
     
 
 
@@ -293,7 +309,7 @@ console.log('Prefer Not to Answer option selected');
 async openOtherConditionsSection() {
     await this.otherConditionsLabel.waitFor({ state: 'visible', timeout: 5000 });
     await this.otherConditionsLabel.click();
-    console.log('Other Conditions section opened');
+    console.log('Other Conditions section opened and clicked');
   }
 
   async selectMultipleOtherConditions() {
@@ -312,10 +328,156 @@ async openOtherConditionsSection() {
 
     await this.metabolicDiseaseChk.check();
     console.log('Metabolic Dysfunction condition selected');
+     console.log('User can select multiple other conditions options');
   }
 
+
+  // ===================== Sleep Apnea Helpers =====================
+
+async isSleepApneaDisabled(): Promise<boolean> {
+  console.log('[SleepApnea] Checking if Sleep Apnea is disabled');
+  return await this.sleepApneaChk.isDisabled();
+}
+
+async waitForSleepApneaEnabled(timeout = 5000) {
+  console.log('[SleepApnea] Waiting for Sleep Apnea to be enabled');
+
+  await this.sleepApneaChk.waitFor({ state: 'attached', timeout });
+
+  await this.page.waitForFunction(
+    (el) => !el.hasAttribute('disabled'),
+    await this.sleepApneaChk.elementHandle(),
+    { timeout }
+  );
 }
 
 
+async trySelectSleepApneaOnly() {
+  console.log('[SleepApnea] Trying to select Sleep Apnea only');
+  await this.sleepApneaChk.click();
+}
+
+async isSleepApneaChecked(): Promise<boolean> {
+  return await this.sleepApneaChk.isChecked();
+}
+
+// ===================== Clear Selections =====================
+
+async deselectDiabetesType() {
+  console.log('[SleepApnea] Deselecting diabetes type');
+  try { await this.type1Option.click(); } catch {}
+  try { await this.type2Option.click(); } catch {}
+  try { await this.noneOption.click(); } catch {}
+}
+
+async deselectAllDiseaseConditions() {
+  console.log('[SleepApnea] Deselecting all disease conditions');
+
+  if (await this.heartFailureChk.isChecked()) await this.heartFailureChk.uncheck();
+  if (await this.highBloodPressureChk.isChecked()) await this.highBloodPressureChk.uncheck();
+  if (await this.weightManagementChk.isChecked()) await this.weightManagementChk.uncheck();
+  if (await this.sleepApneaChk.isChecked()) await this.sleepApneaChk.uncheck();
+  if (await this.metabolicDiseaseChk.isChecked()) await this.metabolicDiseaseChk.uncheck();
+}
+// ===================== Diabetes Type Actions =====================
+
+async selectDiabetesType(type: string) {
+  console.log(`[Diabetes] Selecting diabetes type: ${type}`);
+
+  switch (type.toLowerCase()) {
+    case 'type 1':
+      await this.type1Option.waitFor({ state: 'visible', timeout: 5000 });
+      await this.type1Option.click();
+      break;
+
+    case 'type 2':
+      await this.type2Option.waitFor({ state: 'visible', timeout: 5000 });
+      await this.type2Option.click();
+      break;
+
+    case 'none':
+      await this.noneOption.waitFor({ state: 'visible', timeout: 5000 });
+      await this.noneOption.click();
+      break;
+
+    default:
+      throw new Error(`❌ Unsupported diabetes type: ${type}`);
+  }
+}
+async waitForAddPatientInfoMessage() {
+  console.log('[AddPatient] Waiting for info message on Add Patient page');
+
+  await this.page
+    .getByText('Complete the following form')
+    .waitFor({ state: 'visible', timeout: 5000 });
+}
 
 
+async clickActionItemsTab() {
+  console.log('[AddPatient] Clicking Action Items tab');
+  await this.page
+    .getByRole('link', { name: 'Action ltems' })
+    .click();
+}
+
+async waitForLeavePagePopup() {
+  console.log('[Popup] Waiting for leave page popup');
+  await this.page
+    .getByText('You are about to leave this')
+    .waitFor({ state: 'visible', timeout: 5000 });
+}
+
+async clickYesOnLeavePopup() {
+  console.log('[Popup] Clicking Yes');
+  await this.page
+    .getByRole('button', { name: 'Yes' })
+    .click();
+}
+
+async clickNoOnLeavePopup() {
+  console.log('[Popup] Clicking No');
+  await this.page
+    .getByRole('button', { name: 'No', exact: true })
+    .click();
+}
+
+async clickPatientsTabFromHeader() {
+  console.log('[Navigation] Clicking Patients tab');
+  await this.page
+    .getByRole('link', { name: 'Patients' })
+    .click();
+}
+async openProfileMenu() {
+  console.log('[Logout] Opening profile menu');
+
+  await this.profileMenuBtn.waitFor({ state: 'visible', timeout: 8000 });
+  await this.profileMenuBtn.hover();
+  await this.logoutBtn.waitFor({ state: 'visible', timeout: 5000 });
+}
+
+
+async clickLogoutOption() {
+  console.log('[Logout] Clicking Logout option');
+  await this.logoutBtn.click();
+}
+
+async clickLoginFromLogoutScreen() {
+  console.log('[Logout] Clicking Login button from logout screen');
+  await this.loginBtnOnLogoutScreen.waitFor({ state: 'visible', timeout: 5000 });
+  await this.loginBtnOnLogoutScreen.click();
+}
+
+async verifyLoginPageDisplayed() {
+  console.log('[Logout] Verifying login page displayed');
+  await this.usernameField.waitFor({ state: 'visible', timeout: 10000 });
+}
+
+async closeLogoutOverlayIfAny() {
+  console.log('[Logout] Closing logout overlay if present');
+  try {
+    await this.logoutOverlayCloseBtn.click();
+  } catch {
+    // overlay may not be present
+  }
+}
+}

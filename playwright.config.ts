@@ -1,21 +1,22 @@
 import { defineConfig, devices } from '@playwright/test';
 import { defineBddConfig } from 'playwright-bdd'; //
-import * as dotenv from 'dotenv'; // Use this import style for better compatibility
+import * as dotenv from 'dotenv'; 
 import path from 'path';
 
-// Load .env file properly using absolute path
+
 dotenv.config({ path: path.resolve(__dirname, '.env') }); 
 
 const testDir = defineBddConfig({
-  paths: ['src/test/features/**/*.feature'], // Path to your features
-  importTestFrom: 'src/test/steps/loginSteps.ts', // Adjust this to your custom test file if needed
+  paths: ['src/test/features/**/*.feature'], 
+  importTestFrom: 'src/test/steps/loginSteps.ts', 
 });
 
 export default defineConfig({
-  testDir, // Use the generated test directory
+  testDir, 
+  retries: process.env.CI ? 2 : 0,
   reporter: 'html',
   use: {
-    screenshot: 'on',
+    screenshot: 'on', 
     video: 'on-first-retry',
   },
 });

@@ -3,6 +3,9 @@ import { chromium, firefox, webkit } from '@playwright/test';
 import { CustomWorld } from '../../helper/util/world';
 import { GlobalVariables } from '../../helper/util/globalVariables';
 import * as fs from 'fs';
+import { UserManagementPage } from '../../pages/userManagementPage';
+import HelpPage from '../../pages/helpPage';
+import LoginPage from '../../pages/loginPage';
 
 
 setDefaultTimeout(60 * 1000);
@@ -45,6 +48,10 @@ Before(async function (this: CustomWorld) {
             }
         });
         this.page = await this.context.newPage();
+
+        this.loginPage = new LoginPage(this.page);
+        this.helpPage = new HelpPage(this.page);
+        this.userPage = new UserManagementPage(this.page);
 
         if (this.page && GlobalVariables.BASE_URL) {
             console.log(`>>> Navigating to: ${GlobalVariables.BASE_URL}`);
@@ -108,9 +115,3 @@ After(async function (this: CustomWorld, scenario) {
         throw error;
     }
 });
-
-// ==========================
-// AFTERALL HOOK (Once After All Scenarios)
-// ==========================
-// hooks.ts AfterAll
-
